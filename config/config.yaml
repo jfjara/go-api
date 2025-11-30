@@ -1,0 +1,4 @@
+security:
+  jwt-key: laclave
+  token-live-minutes: 2
+logger-debug: true

@@ -1,0 +1,57 @@
+basePath: /
+definitions:
+  dto.LoginRequest:
+    properties:
+      password:
+        maxLength: 64
+        minLength: 4
+        type: string
+      username:
+        maxLength: 32
+        minLength: 3
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  dto.LoginResponse:
+    properties:
+      error:
+        type: string
+      token:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact: {}
+  description: API de ejemplo con login y JWT
+  title: Mi API en Go
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate an user and return a JWT Token
+      parameters:
+      - description: Credenciales de acceso
+        in: body
+        name: login
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.LoginResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/dto.LoginResponse'
+      summary: User login
+      tags:
+      - auth
+swagger: "2.0"
