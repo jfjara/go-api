@@ -10,10 +10,14 @@ import (
 const YAML_NOT_FOUND_ERROR = "ERROR: config.yaml not readed"
 const UNMARSHAL_YAML_ERROR = "ERROR: config.yaml unmarshal problem"
 
+type SecurityConfig struct {
+    JWTKey           string `yaml:"jwt-key"`
+    TokenLiveInHours int    `yaml:"token-live-hours"`
+}
+
 type AppConfiguration struct {
-	JWTKey             string `yaml:"security.jwt-key"`
-	TokenLiveInMinutes int    `yaml:"security.token-live-minutes"`
-	LoggerDebug        bool   `yaml:"logger-debug"`
+    Security    SecurityConfig `yaml:"security"`
+    LoggerDebug bool           `yaml:"logger-debug"`
 }
 
 var (

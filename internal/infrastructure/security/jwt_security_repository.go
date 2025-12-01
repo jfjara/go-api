@@ -3,13 +3,12 @@ package security
 import (
 	"time"
 
+	"github.com/gofiber/fiber/v2"
+	jwtware "github.com/gofiber/jwt/v3"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/juanfran/mi-api/internal/domain"
 	"github.com/juanfran/mi-api/internal/domain/model"
 	"github.com/juanfran/mi-api/internal/infrastructure/logger"
-
-	"github.com/gofiber/fiber/v2"
-	jwtware "github.com/gofiber/jwt/v3"
 )
 
 type JwtSecurityRepository struct {
@@ -21,16 +20,27 @@ func NewJwtSecurityRepository(jwtKey []byte) *JwtSecurityRepository {
 	return &JwtSecurityRepository{jwtKey: jwtKey}
 }
 
+
 func (j *JwtSecurityRepository) CreateToken(user *model.User) (string, error) {
-	config := domain.GetConfig()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"username": user.Username,
-		"exp":      time.Now().Add(time.Minute * time.Duration(config.TokenLiveInMinutes)).Unix(),
-	})
-	result, error := token.SignedString(j.jwtKey)
-	logger.Log.Debug("token generated", "token", result)
-	return result, error
+    config := domain.GetConfig()
+
+    claims := &jwt.RegisteredClaims{
+        Subject:   user.Username,
+        ExpiresAt: jwt.NewNumericDate(time.Now().Add(time.Hour * time.Duration(config.Security.TokenLiveInHours))),
+    }
+
+    token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+
+    result, err := token.SignedString(j.jwtKey)
+    if err != nil {
+        logger.Log.Error("error signing token", "error", err)
+        return "", err
+    }
+
+    logger.Log.Debug("token generated", "token", result)
+    return result, nil
 }
+
 
 func (j *JwtSecurityRepository) SecurizePath(path string, app *fiber.App) fiber.Router {
 	logger.Log.Debug("Securized path", "path", path)

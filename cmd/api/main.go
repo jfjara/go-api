@@ -25,7 +25,7 @@ func main() {
 	logger.Log.Info("Starting server...")
 	app := fiber.New()
 
-	jwtKey := []byte(config.JWTKey)
+	jwtKey := []byte(config.Security.JWTKey)
 
 	passwordHasher := security.NewBCryptPasswordHasher()
 	userRepository := persistence.NewUserRepositoryMemory(passwordHasher)
