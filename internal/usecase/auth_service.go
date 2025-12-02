@@ -3,7 +3,7 @@ package usecase
 import (
 	"errors"
 
-	"github.com/juanfran/mi-api/internal/domain"
+	"github.com/juanfran/mi-api/internal/domain/repository"
 	"github.com/juanfran/mi-api/internal/infrastructure/http/dto"
 	"github.com/juanfran/mi-api/internal/infrastructure/logger"
 	"github.com/juanfran/mi-api/internal/infrastructure/validation"
@@ -13,12 +13,12 @@ const USER_NOT_FOUND_MESSAGE = "user not found"
 const USER_PASSWORD_INCORRECT_MESSAGE = "user or password incorrect"
 
 type AuthService struct {
-	userRepository     domain.UserRepository
-	hasher             domain.PasswordHasher
-	securityRepository domain.SecurityRepository
+	userRepository     repository.UserRepository
+	hasher             repository.PasswordHasher
+	securityRepository repository.SecurityRepository
 }
 
-func NewAuthService(repo domain.UserRepository, hasher domain.PasswordHasher, securityRepository domain.SecurityRepository) *AuthService {
+func NewAuthService(repo repository.UserRepository, hasher repository.PasswordHasher, securityRepository repository.SecurityRepository) *AuthService {
 	return &AuthService{userRepository: repo, hasher: hasher, securityRepository: securityRepository}
 }
 
