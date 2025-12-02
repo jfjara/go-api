@@ -1,26 +1,27 @@
 {
   "annotations": { "list": [] },
-  "title": "Go Fiber API Metrics",
+  "title": "Go Fiber API Metrics - Live",
   "schemaVersion": 36,
-  "version": 2,
+  "version": 1,
   "timezone": "browser",
   "panels": [
     {
-      "type": "barchart",
-      "title": "Número de llamadas por endpoint",
+      "type": "timeseries",
+      "title": "Peticiones por minuto por endpoint",
       "datasource": "Prometheus",
       "targets": [
         {
-          "expr": "sum by(path, method)(http_requests_total{path!=\"/metrics\"})",
+          "expr": "sum by(path, method)(rate(http_requests_total{path!=\"/metrics\"}[1m])) * 60",
           "legendFormat": "{{method}} {{path}}",
           "refId": "A"
         }
       ],
-      "xaxis": { "mode": "series" }
+      "fieldConfig": { "defaults": { "unit": "req/s" } },
+      "options": { "tooltip": { "mode": "all" } }
     },
     {
-      "type": "graph",
-      "title": "Tiempo de respuesta por endpoint (segundos)",
+      "type": "timeseries",
+      "title": "Latencia media por endpoint (segundos)",
       "datasource": "Prometheus",
       "targets": [
         {
@@ -29,22 +30,22 @@
           "refId": "B"
         }
       ],
-      "yaxes": [
-        { "format": "s", "label": "Segundos", "min": 0 },
-        { "format": "short" }
-      ]
+      "fieldConfig": { "defaults": { "unit": "s" } },
+      "options": { "tooltip": { "mode": "all" } }
     },
     {
-      "type": "piechart",
-      "title": "Errores por endpoint (4xx y 5xx)",
+      "type": "timeseries",
+      "title": "Errores por minuto por endpoint",
       "datasource": "Prometheus",
       "targets": [
         {
-          "expr": "sum by(path, status_code)(http_requests_total{path!=\"/metrics\"}) - sum by(path, status_code)(http_requests_total{path!=\"/metrics\", status_code=~\"2..\"})",
+          "expr": "sum by(path, status_code)(rate(http_requests_total{path!=\"/metrics\", status_code=~\"4..|5..\"}[1m])) * 60",
           "legendFormat": "{{path}} {{status_code}}",
           "refId": "C"
         }
-      ]
+      ],
+      "fieldConfig": { "defaults": { "unit": "req/s" } },
+      "options": { "tooltip": { "mode": "all" } }
     }
   ]
 }
