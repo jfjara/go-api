@@ -21,6 +21,7 @@ func (h *AuthHandler) RegisterRoutes(app *fiber.App) {
 }
 
 func (h *AuthHandler) RegisterSecuredRoutes(api fiber.Router) {
+
 	api.Get("/profile", func(c *fiber.Ctx) error {
 		user := c.Locals("user")
 		return c.JSON(fiber.Map{
