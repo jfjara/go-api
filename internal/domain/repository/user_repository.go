@@ -1,4 +1,4 @@
-package domain
+package repository
 
 import "github.com/juanfran/mi-api/internal/domain/model"
 

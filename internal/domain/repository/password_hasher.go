@@ -1,4 +1,4 @@
-package domain
+package repository
 
 type PasswordHasher interface {
 	Hash(password string) (string, error)

@@ -1,4 +1,4 @@
-package domain
+package repository
 
 import (
 	"github.com/gofiber/fiber/v2"
