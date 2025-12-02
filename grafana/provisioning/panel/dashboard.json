@@ -1,0 +1,50 @@
+{
+  "annotations": { "list": [] },
+  "title": "Go Fiber API Metrics",
+  "schemaVersion": 36,
+  "version": 2,
+  "timezone": "browser",
+  "panels": [
+    {
+      "type": "barchart",
+      "title": "Número de llamadas por endpoint",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by(path, method)(http_requests_total{path!=\"/metrics\"})",
+          "legendFormat": "{{method}} {{path}}",
+          "refId": "A"
+        }
+      ],
+      "xaxis": { "mode": "series" }
+    },
+    {
+      "type": "graph",
+      "title": "Tiempo de respuesta por endpoint (segundos)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "rate(http_request_duration_seconds_sum{path!=\"/metrics\"}[1m]) / rate(http_request_duration_seconds_count{path!=\"/metrics\"}[1m])",
+          "legendFormat": "{{method}} {{path}}",
+          "refId": "B"
+        }
+      ],
+      "yaxes": [
+        { "format": "s", "label": "Segundos", "min": 0 },
+        { "format": "short" }
+      ]
+    },
+    {
+      "type": "piechart",
+      "title": "Errores por endpoint (4xx y 5xx)",
+      "datasource": "Prometheus",
+      "targets": [
+        {
+          "expr": "sum by(path, status_code)(http_requests_total{path!=\"/metrics\"}) - sum by(path, status_code)(http_requests_total{path!=\"/metrics\", status_code=~\"2..\"})",
+          "legendFormat": "{{path}} {{status_code}}",
+          "refId": "C"
+        }
+      ]
+    }
+  ]
+}
